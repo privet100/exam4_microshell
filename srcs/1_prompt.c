@@ -265,24 +265,6 @@ char	setup_line(t_sh *sh)
 	return (0);
 }
 
-//	if (unclosed_quote s(sh->line))
-//		return (ft_putstr_fd(UNCL_QUOTES, 2), 2);
-int	treat_line(t_sh *sh, char **envp)
-{
-	int		ret;
-
-	if (!sh->line || (sh->line && !*sh->line))
-		return (0);
-	if (!*sh->line)
-		return (0);
-	ret = setup_line(sh);
-	if (ret)
-		return (free_lstcmd(&(sh->cmd)), ret);
-	if (sh->cmd)
-		ret = executor(sh, envp);
-	return (ret);
-}
-
 void	reset_sh(t_sh *sh)
 {
 	// free_lstcmd(&(sh->cmd));
@@ -308,8 +290,9 @@ int	main(int ac, char **av, char **envp)
 		sh.line = readline("microshell$ ");
 		if (!sh.line)
 			break ;
-		if (*(sh.line))
-			treat_line(&sh, envp);
+		setup_line(&sh);
+		//free_lstcmd(&(sh.cmd)); segfault
+		executor(&sh, envp);
 	}
 	return (exit_fork(&sh, 0, NULL), (void)av, 0);
 }
