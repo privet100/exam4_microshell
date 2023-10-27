@@ -35,12 +35,10 @@ typedef struct s_sh
 	int				end[4];
 }	t_sh;
 
-/* executor.c */
 int		executor(t_sh *sh, char **envp);
-void	ft_fork(t_sh *sh, t_cmd *cmd, int nb, char **envp);
 void	exit_fork(t_sh *sh, int ret, char *error);
 
-/* utils.c */
+int	ft_putstr_fd2(char *str, char *arg);
 char	**ft_arrdup(char **arr, int size);
 int		ft_arrlen(char **arr);
 void	free_arr(char **arr);
