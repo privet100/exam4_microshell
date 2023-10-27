@@ -196,7 +196,7 @@ int	add_cmd_lst_loop(char *line, t_cmd **cmd)
 		if (!add_cmd(&line[i], &((*cmd)->cmd), &i))
 			return (free(line), ft_putstr_fd2(ERR_MSG, NULL), 1);
 		if (i < 0)
-			return (free(line), ft_putstr_fd2(TOK_SYN_ERR, NULL), 2);
+			return (free(line), ft_putstr_fd2(ERR_MSG, NULL), 1);
 	}
 	free(line);
 	return (0);
@@ -229,7 +229,7 @@ int	add_cmd_lst(t_sh *sh, char *cmd_line)
 	line = ft_strdup(cmd_line); // need strdup ?
 	free(cmd_line);
 	if (!*line)
-		return (free(line), ft_putstr_fd2(PIP_SYN_ERR, NULL), 2);
+		return (free(line), ft_putstr_fd2(ERR_MSG, NULL), 2);
 	cmd = init_cmd_lst();
 	if (!cmd)
 		return (free(line), ft_putstr_fd2(ERR_MSG, NULL), 2);
@@ -261,7 +261,7 @@ char	setup_line(t_sh *sh)
 			break ;
 	}
 	if (sh->line[i - 1] == '|')
-		return (ft_putstr_fd2(PIP_SYN_ERR, NULL), 2);
+		return (ft_putstr_fd2(ERR_MSG, NULL), 2);
 	return (0);
 }
 
@@ -292,7 +292,10 @@ void	reset_sh(t_sh *sh)
 	sh->cmd = NULL;
 	sh->fd_stdin = 0;
 	sh->fd_stdout = 1;
-	ft_memset(sh->end, -1, 4 * sizeof(int));
+	sh->end[0] = -1;
+	sh->end[1] = -1;
+	sh->end[2] = -1;
+	sh->end[3] = -1;
 }
 
 int	main(int ac, char **av, char **envp)

@@ -106,18 +106,6 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	return (dst_len + src_len);
 }
 
-void	*ft_memset(void *s, int c, size_t n)
-{
-	size_t	len;
-	char	*str;
-
-	len = -1;
-	str = (char *)s;
-	while (++len < n)
-		str[len] = c;
-	return (s);
-}
-
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;

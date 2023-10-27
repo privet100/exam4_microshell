@@ -1,7 +1,5 @@
 #include "microshell.h"
 
-#define DIR_ERR	": Is a directory\n"
-
 int	manage_dup(int end[4], t_cmd *cmd, int nb)
 {
 	const int	even = !(nb % 2);
@@ -12,6 +10,7 @@ int	manage_dup(int end[4], t_cmd *cmd, int nb)
 		return (1);
 	else if (cmd->fd_in == -1 && nb > 1 && even && dup2(end[0], 0) == -1)
 		return (1);
+
 	if (cmd->fd_out != -1 && dup2(cmd->fd_out, STDOUT_FILENO) == -1)
 		return (1);
 	else if (cmd->fd_out == -1 && cmd->next && !even && dup2(end[1], 1) == -1)
