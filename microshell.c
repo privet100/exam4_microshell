@@ -57,18 +57,11 @@ int	main(int argc, char *argv[], char *env[])
 			{
 				dup2 (FROM_PRV_CHILD, STDIN );
 				close(FROM_PRV_CHILD);
-				// if (argv[i] == NULL || strcmp(argv[i], ";") == 0)
-				// {
-				// 	// close(TO_NXT_CHILD);
-				// 	// TO_NXT_CHILD        = dup(STDOUT);
-				// 	// dup2 (TO_NXT_CHILD,   STDOUT);
-				// 	// close(TO_NXT_CHILD);
-				// }
 				if (argv[i] != NULL && strcmp(argv[i], "|") == 0)
 				{
 					dup2 (TO_NXT_CHILD,   STDOUT);
-					close(TO_NXT_CHILD);
 				}
+				close(TO_NXT_CHILD);
 				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
