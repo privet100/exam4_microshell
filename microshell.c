@@ -49,8 +49,8 @@ int	main(int argc, char *argv[], char *env[])
 			if (fork() != 0)
 			{
 				close(FROM_PRV_CHILD);
-				FROM_PRV_CHILD = NXT_CHILD_WILL_READ;
 				close(TO_NXT_CHILD);
+				FROM_PRV_CHILD = NXT_CHILD_WILL_READ;
 				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
@@ -58,15 +58,15 @@ int	main(int argc, char *argv[], char *env[])
 				if (argv[i] == NULL || strcmp(argv[i], ";") == 0)
 				{
 					close(TO_NXT_CHILD);
-					TO_NXT_CHILD  = dup(STDOUT);
 					close(NXT_CHILD_WILL_READ);
+					TO_NXT_CHILD        = dup(STDOUT);
 					NXT_CHILD_WILL_READ = dup(STDIN);
 				}
 				dup2 (FROM_PRV_CHILD, STDIN);
-				close(FROM_PRV_CHILD);
 				dup2 (TO_NXT_CHILD, STDOUT);
+				close(FROM_PRV_CHILD);
 				close(TO_NXT_CHILD);
-				argv[i] = NULL; // overwrite ; | NULL with NULL -> no impact in the parent
+				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
 			}
