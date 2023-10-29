@@ -1,3 +1,7 @@
+Sources : https://github.com/shackbei/microshell-42/blob/main/microshell.c
+
+https://github.com/Glagan/42-exam-rank-04/blob/master/micro;shell/test.sh
+
 Allowed functions: malloc, free, write, close, fork, waitpid, signal, kill, exit, chdir, execve, dup, dup2, pipe, strcmp, strncmp
 
 Write a program that will behave like executing a shell command
