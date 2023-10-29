@@ -1,6 +1,3 @@
-// https://github.com/shackbei/microshell-42/blob/main/microshell.c
-// https://github.com/Glagan/42-exam-rank-04/blob/master/micro;shell/test.sh
-
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
