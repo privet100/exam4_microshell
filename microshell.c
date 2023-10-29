@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
-#define CHILDIN      fd_tmp
-#define CHILDOUT        pip[1]
+#define FROM_PRV_CHILD      fd_tmp
+#define TO_NXT_CHILD        pip[1]
 #define NXT_CHILD_WILL_READ pip[0]
 #define STDIN               STDIN_FILENO
 #define STDOUT              STDOUT_FILENO
@@ -27,11 +27,11 @@ void	write_fd2(char *s1, char *s2)
 int	main(int argc, char *argv[], char *env[])
 {
 	int	i = 0;
-	int j = 0;
-	int fd_tmp = dup(STDIN);
+	int fd_tmp;
 	int pip[2];
 	(void)argc;
 
+	FROM_PRV_CHILD  = dup(STDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
@@ -48,25 +48,28 @@ int	main(int argc, char *argv[], char *env[])
 		{
 			if (fork() != 0)
 			{
-				close(CHILDIN);
-				CHILDIN = NXT_CHILD_WILL_READ;
-				close(CHILDOUT);
-				waitpid(-1, NULL, WUNTRACED); // close(tmp_f d), waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
+				close(FROM_PRV_CHILD);
+				FROM_PRV_CHILD = NXT_CHILD_WILL_READ;
+				close(TO_NXT_CHILD);
+				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
 			{
-				if (argv[i] == NULL || strcmp(argv[i], ";") == 0)
+				dup2 (FROM_PRV_CHILD, STDIN );
+				close(FROM_PRV_CHILD);
+				// if (argv[i] == NULL || strcmp(argv[i], ";") == 0)
+				// {
+				// 	// close(TO_NXT_CHILD);
+				// 	// TO_NXT_CHILD        = dup(STDOUT);
+				// 	// dup2 (TO_NXT_CHILD,   STDOUT);
+				// 	// close(TO_NXT_CHILD);
+				// }
+				if (argv[i] != NULL && strcmp(argv[i], "|") == 0)
 				{
-					close(CHILDOUT);
-					close(NXT_CHILD_WILL_READ);
-					CHILDOUT        = dup(STDOUT);
-					NXT_CHILD_WILL_READ = dup(STDIN);
+					dup2 (TO_NXT_CHILD,   STDOUT);
+					close(TO_NXT_CHILD);
 				}
-				dup2(CHILDIN, STDIN);
-				close(CHILDIN);
-				dup2(CHILDOUT, STDOUT); // close(fd[0]);
-				close(CHILDOUT);
-				argv[i] = NULL; // overwrite ; | NULL with NULL -> no impact in the parent
+				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
 			}
