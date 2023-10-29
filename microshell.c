@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
-#define FROM_PRV_CHILD      fd_tmp
 #define TO_NXT_CHILD        pip[1]
 #define NXT_CHILD_WILL_READ pip[0]
 #define STDIN               STDIN_FILENO
@@ -27,24 +26,20 @@ void	write_fd2(char *s1, char *s2)
 int	main(int argc, char *argv[], char *env[])
 {
 	int	i = 0;
-	int fd_tmp;
+	int FROM_PRV_CHILD = dup(STDIN);
 	int pip[2];
 	(void)argc;
 
-	FROM_PRV_CHILD  = dup(STDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
 		i = -1;
 		while (argv[++i] && strcmp(argv[i], ";") && strcmp(argv[i], "|")) ;
-		if (strcmp(argv[0], "cd") == 0 && i == 2)
-		{
-			if (chdir(argv[1]) != 0)
-				write_fd2("error: cd: cannot change directory to ", argv[1]);
-		}
-		else if (strcmp(argv[0], "cd") == 0 && i != 2)
+		if (strcmp(argv[0], "cd") == 0 && i != 2)
 			write_fd2("error: cd: bad arguments", NULL);
-		else if(i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
+		if (strcmp(argv[0], "cd") == 0 && i == 2 && chdir(argv[1]) != 0)
+			write_fd2("error: cd: cannot change directory to ", argv[1]);
+		if (strcmp(argv[0], "cd") != 0 && i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
 		{
 			if (fork() != 0)
 			{
@@ -55,12 +50,10 @@ int	main(int argc, char *argv[], char *env[])
 			}
 			else
 			{
-				dup2 (FROM_PRV_CHILD, STDIN );
+				dup2 (FROM_PRV_CHILD, STDIN);
 				close(FROM_PRV_CHILD);
 				if (argv[i] != NULL && strcmp(argv[i], "|") == 0)
-				{
-					dup2 (TO_NXT_CHILD,   STDOUT);
-				}
+					dup2 (TO_NXT_CHILD, STDOUT);
 				close(TO_NXT_CHILD);
 				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
