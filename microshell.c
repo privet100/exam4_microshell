@@ -28,10 +28,11 @@ int	main(int argc, char *argv[], char *env[])
 {
 	int	i = 0;
 	int j = 0;
-	int fd_tmp = dup(STDIN);
+	int fd_tmp;
 	int pip[2];
 	(void)argc;
 
+	CHILDIN = dup(STDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
@@ -51,7 +52,7 @@ int	main(int argc, char *argv[], char *env[])
 				close(CHILDIN);
 				CHILDIN = NXT_CHILDIN;
 				close(CHILDOUT);
-				waitpid(-1, NULL, WUNTRACED); // close(tmp_f d), waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
+				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
 			{
@@ -64,7 +65,7 @@ int	main(int argc, char *argv[], char *env[])
 				}
 				dup2(CHILDIN, STDIN);
 				close(CHILDIN);
-				dup2(CHILDOUT, STDOUT); // close(fd[0]);
+				dup2(CHILDOUT, STDOUT);
 				close(CHILDOUT);
 				argv[i] = NULL; // overwrite ; | NULL with NULL -> no impact in the parent
 				execve(argv[0], argv, env);
