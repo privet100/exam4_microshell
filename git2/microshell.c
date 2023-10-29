@@ -1,17 +1,12 @@
 // https://github.com/shackbei/microshell-42/blob/main/microshell.c
 // https://github.com/Glagan/42-exam-rank-04/blob/master/micro;shell/test.sh
 
-	// dprintf(2, "\nGEN-%d %2d -> ... -> %2d,                 %2d\n", j, STDIN, STDOUT, CHILDIN);
-			// dprintf(2, "\nGEN-%d                  %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, NXT_CHILDIN);
-				// dprintf(2, "PAR-%d %2d -> ... -> %2d,                 %2d\n\n", j, STDIN, STDOUT,  NXT_CHILDIN);
-				// dprintf(2, "CHL-%d %2d -> ... -> %2d, %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, CHILDIN, CHILDOUT, NXT_CHILDIN);
-
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
 #include <stdlib.h> // tmp
 #include <stdio.h> // tmp
-#define 	     fd_tmp
+#define CHILDIN     fd_tmp
 #define CHILDOUT    pip[1]
 #define NXT_CHILDIN pip[0]
 #define STDIN       STDIN_FILENO
@@ -30,11 +25,11 @@ int	main(int argc, char *argv[], char *env[])
 {
 	int	i = 0;
 	int j = 0;
-	int fd_tmp;
+	int fd_tmp = dup(STDIN);
 	int pip[2];
 	(void)argc;
 
-	CHILDIN =  = dup(STDIN);
+	// dprintf(2, "\nGEN-%d %2d -> ... -> %2d,                 %2d\n", j, STDIN, STDOUT, CHILDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
@@ -49,11 +44,14 @@ int	main(int argc, char *argv[], char *env[])
 			write_fd2("error: cd: bad arguments", NULL);
 		else if(i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
 		{
+			// dprintf(2, "\nGEN-%d                  %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, NXT_CHILDIN);
 			if (fork() != 0)
 			{
 				close(CHILDIN);
 				CHILDIN = NXT_CHILDIN;
 				close(CHILDOUT);
+				// dprintf(2, "PAR-%d %2d -> ... -> %2d,                 %2d\n\n", j, STDIN, STDOUT,  NXT_CHILDIN);
+				// while(waitpid(-1, NULL, WUNTRACED) != -1) ; // close(tmp_f d), waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 				waitpid(-1, NULL, WUNTRACED); // close(tmp_f d), waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
@@ -67,9 +65,10 @@ int	main(int argc, char *argv[], char *env[])
 				}
 				dup2(CHILDIN, STDIN);
 				close(CHILDIN);
-				dup2(CHILDOUT, STDOUT);
+				dup2(CHILDOUT, STDOUT); // close(fd[0]);
 				close(CHILDOUT);
-				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
+				argv[i] = NULL; // overwrite ; | NULL with NULL -> no impact in the parent
+				// dprintf(2, "CHL-%d %2d -> ... -> %2d, %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, CHILDIN, CHILDOUT, NXT_CHILDIN);
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
 			}
