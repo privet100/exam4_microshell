@@ -9,9 +9,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
-#define FROM_PRV_CHILD     fd_tmp
-#define TO_NXT_CHILD        PIPE_TO_NXT_CHILD[1]
-#define NXT_CHILD_WILL_READ PIPE_TO_NXT_CHILD[0]
+#define CHILDIN      fd_tmp
+#define CHILDOUT        pip[1]
+#define NXT_CHILD_WILL_READ pip[0]
 #define STDIN               STDIN_FILENO
 #define STDOUT              STDOUT_FILENO
 
@@ -27,12 +27,12 @@ void	write_fd2(char *s1, char *s2)
 int	main(int argc, char *argv[], char *env[])
 {
 	int	i = 0;
-	int fd_tmp;
-	int PIPE_TO_NXT_CHILD[2];
+	int j = 0;
+	int fd_tmp = dup(STDIN);
+	int pip[2];
 	(void)argc;
 
-	FROM_PRV_CHILD = dup(STDIN);
-	while (argv[i] && argv[i + 1])
+	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
 		i = -1;
@@ -44,29 +44,29 @@ int	main(int argc, char *argv[], char *env[])
 		}
 		else if (strcmp(argv[0], "cd") == 0 && i != 2)
 			write_fd2("error: cd: bad arguments", NULL);
-		else if(i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(PIPE_TO_NXT_CHILD) == 0)
+		else if(i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
 		{
 			if (fork() != 0)
 			{
-				close(FROM_PRV_CHILD);
-				close(TO_NXT_CHILD);
-				FROM_PRV_CHILD = NXT_CHILD_WILL_READ;
-				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
+				close(CHILDIN);
+				CHILDIN = NXT_CHILD_WILL_READ;
+				close(CHILDOUT);
+				waitpid(-1, NULL, WUNTRACED); // close(tmp_f d), waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
 			{
 				if (argv[i] == NULL || strcmp(argv[i], ";") == 0)
 				{
-					close(TO_NXT_CHILD);
+					close(CHILDOUT);
 					close(NXT_CHILD_WILL_READ);
-					TO_NXT_CHILD        = dup(STDOUT);
+					CHILDOUT        = dup(STDOUT);
 					NXT_CHILD_WILL_READ = dup(STDIN);
 				}
-				dup2 (FROM_PRV_CHILD, STDIN);
-				dup2 (TO_NXT_CHILD, STDOUT);
-				close(FROM_PRV_CHILD);
-				close(TO_NXT_CHILD);
-				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
+				dup2(CHILDIN, STDIN);
+				close(CHILDIN);
+				dup2(CHILDOUT, STDOUT); // close(fd[0]);
+				close(CHILDOUT);
+				argv[i] = NULL; // overwrite ; | NULL with NULL -> no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
 			}
