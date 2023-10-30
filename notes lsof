@@ -26,9 +26,9 @@ microshel 45572   an  mem    REG               8,20   191504 5245069 /usr/lib/x8
 microshel 45572   an    0u   CHR              136,0      0t0       3 /dev/pts/0
 microshel 45572   an    1u   CHR              136,0      0t0       3 /dev/pts/0
 microshel 45572   an    2u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 45572   an    3u   CHR              136,0      0t0       3 /dev/pts/0                                                (!)
-microshel 45572   an    4r  FIFO               0,13      0t0  810985 pipe                                                      (!)
-microshel 45572   an    5w  FIFO               0,13      0t0  810985 pipe                                                      (!)
+microshel 45572   an    3u   CHR              136,0      0t0       3 /dev/pts/0             (!)
+microshel 45572   an    4r  FIFO               0,13      0t0  810985 pipe                   (!)
+microshel 45572   an    5w  FIFO               0,13      0t0  810985 pipe                   (!)
 microshel 45572   an   36w   REG               8,20      488 2891842 /home/an/.config/Code/logs/20231030T080138/ptyhost.log
 microshel 45572   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
 microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
