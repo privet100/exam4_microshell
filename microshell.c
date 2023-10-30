@@ -30,7 +30,8 @@ int	main(int argc, char *argv[], char *env[])
 	int pip[2];
 	(void)argc;
 
-	dprintf(2, "+ in  %d\n", CHILDIN);
+	// dprintf(2, "+ in  %d\n", CHILDIN);
+	// dprintf(2, "\nGEN %d\t%2d\t%2d\n", CHILDIN, CHILDOUT, NXT_CHILDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		argv = &argv[i + 1]; //new argv starts after ; or |
@@ -40,23 +41,17 @@ int	main(int argc, char *argv[], char *env[])
 			write_fd2("error: cd: bad arguments", NULL);
 		if (strcmp(argv[0], "cd") == 0 && i == 2 && chdir(argv[1]) != 0)
 			write_fd2("error: cd: cannot change directory to ", argv[1]);
-		if (strcmp(argv[0], "cd") != 0 && i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0))
+		if (strcmp(argv[0], "cd") != 0 && i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
 		{
-			dprintf(2, "- out %d\n", CHILDOUT);
-			close(CHILDOUT);
-			// dprintf(2, "- nxt %d\n", NXT_CHILDIN);
-			// close(NXT_CHILDIN);
-			if (pipe(pip) != 0)
-				continue ;
-			dprintf(2, "+ out %d\n", CHILDOUT);
-			dprintf(2, "+ nxt %d\n", NXT_CHILDIN);
+			// dprintf(2, "+ out %d\n", CHILDOUT);
+			// dprintf(2, "+ nxt %d\n", NXT_CHILDIN);
 			if (fork() != 0)
 			{
-				dprintf(2, "- in  %d\n", CHILDIN);
+				// dprintf(2, "- in  %d\n", CHILDIN);
 				close(CHILDIN);
-				dprintf(2, "+ in  %d = nxt\n", CHILDIN);
+				// dprintf(2, "+ in  %d = nxt\n", CHILDIN);
 				CHILDIN = NXT_CHILDIN;
-				dprintf(2, "- out %d\n", CHILDOUT);
+				// dprintf(2, "- out %d\n", CHILDOUT);
 				close(CHILDOUT);
 				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
@@ -74,6 +69,7 @@ int	main(int argc, char *argv[], char *env[])
 			}
 		}
 	}
-	dprintf(2, "- in  %d\n", CHILDIN);
+	// dprintf(2, "- in  %d\n", CHILDIN);
 	close(CHILDIN);
+	sleep(240);
 }
