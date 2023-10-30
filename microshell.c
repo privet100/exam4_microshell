@@ -34,9 +34,7 @@ int	main(int argc, char *argv[], char *env[])
 	// dprintf(2, "\nGEN %d\t%2d\t%2d\n", CHILDIN, CHILDOUT, NXT_CHILDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
-		argv = &argv[i + 1]; //new argv starts after ; or |
-		i = -1;
-		while (argv[++i] && strcmp(argv[i], ";") && strcmp(argv[i], "|")) ;
+		for (argv = &argv[i + 1], i = 0; argv[i] && strcmp(argv[i], ";") && strcmp(argv[i], "|"); i++) ; //new argv starts after ; or |
 		if (strcmp(argv[0], "cd") == 0 && i != 2)
 			write_fd2("error: cd: bad arguments", NULL);
 		if (strcmp(argv[0], "cd") == 0 && i == 2 && chdir(argv[1]) != 0)
@@ -48,21 +46,21 @@ int	main(int argc, char *argv[], char *env[])
 			if (fork() != 0)
 			{
 				// dprintf(2, "- in  %d\n", CHILDIN);
-				// close(CHILDIN);
+				close(CHILDIN);
 				// dprintf(2, "+ in  %d = nxt\n", CHILDIN);
 				CHILDIN = NXT_CHILDIN;
 				// dprintf(2, "- out %d\n", CHILDOUT);
-				// close(CHILDOUT);
+				close(CHILDOUT);
 				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
 			{
 				dup2 (CHILDIN, STDIN);
-				// close(CHILDIN);
+				close(CHILDIN);
 				if (argv[i] != NULL && strcmp(argv[i], "|") == 0)
 					dup2 (CHILDOUT, STDOUT);
-				// close(CHILDOUT);
-				// close(NXT_CHILDIN);
+				close(CHILDOUT);
+				close(NXT_CHILDIN);
 				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
@@ -70,6 +68,6 @@ int	main(int argc, char *argv[], char *env[])
 		}
 	}
 	// dprintf(2, "- in  %d\n", CHILDIN);
-	// close(CHILDIN);
+	close(CHILDIN);
 	sleep(240);
 }
