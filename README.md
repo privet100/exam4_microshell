@@ -43,15 +43,18 @@ Ecrire un programme qui aura ressemblera à un executeur de commande shell
 ```
 $>./microshell /bin/ls "|" /usr/bin/grep microshell ";" /bin/echo i love my microshell
 ```
-`microshell`
+```
+microshell
+i love my microshell
+```
 
-`i love my microshell`
 ```
 $>./microshell /bin/echo WOOT "; /bin/echo NOPE;" "; ;" ";" /bin/echo YEAH
 ```
-`WOOT ; /bin/echo NOPE; ; ;`
-
-`YEAH`
+```
+WOOT ; /bin/echo NOPE; ; ;
+YEAH
+```
 
 ## File leaks (open file descriptors)
 
