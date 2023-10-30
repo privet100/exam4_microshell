@@ -48,21 +48,21 @@ int	main(int argc, char *argv[], char *env[])
 			if (fork() != 0)
 			{
 				// dprintf(2, "- in  %d\n", CHILDIN);
-				close(CHILDIN);
+				// close(CHILDIN);
 				// dprintf(2, "+ in  %d = nxt\n", CHILDIN);
 				CHILDIN = NXT_CHILDIN;
 				// dprintf(2, "- out %d\n", CHILDOUT);
-				close(CHILDOUT);
+				// close(CHILDOUT);
 				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
 			else
 			{
 				dup2 (CHILDIN, STDIN);
-				close(CHILDIN);
+				// close(CHILDIN);
 				if (argv[i] != NULL && strcmp(argv[i], "|") == 0)
 					dup2 (CHILDOUT, STDOUT);
-				close(CHILDOUT);
-				close(NXT_CHILDIN);
+				// close(CHILDOUT);
+				// close(NXT_CHILDIN);
 				argv[i] = NULL; // overwrite ; | NULL with NULL, no impact in the parent
 				execve(argv[0], argv, env);
 				write_fd2("error: cannot execute ", argv[0]);
@@ -70,6 +70,6 @@ int	main(int argc, char *argv[], char *env[])
 		}
 	}
 	// dprintf(2, "- in  %d\n", CHILDIN);
-	close(CHILDIN);
+	// close(CHILDIN);
 	sleep(240);
 }
