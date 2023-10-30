@@ -34,3 +34,7 @@ microshel 45572   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
 microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
 microshel 45572   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 
+PS ```lsof | grep microshjell```, ```ls -l /proc/$$/fd``` and ```lsof -a -p $$``` don't show it
+
+https://stackoverflow.com/questions/77385427/verify-open-file-descriptor-with-lsof/77386331#77386331 
+
