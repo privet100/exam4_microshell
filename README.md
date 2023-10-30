@@ -125,7 +125,7 @@ microshel 48375   an  103r   REG                7,4   578186    9650 /snap/code/
 
 * CHR = Character special file, provides access to an input/output device (a terminal file, a NULL file, a file descriptor file, a system console file) 
 
-PS These commands don't show file leaks: `lsof | grep microshell`, `ls -l /proc/$$/fd`, `lsof -a -p $$`
+PS The followind commands don't show file leaks: `lsof | grep microshell`, `ls -l /proc/$$/fd`, `lsof -a -p $$`
 
 ## Sources
 
