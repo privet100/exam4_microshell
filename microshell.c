@@ -1,11 +1,3 @@
-	// dprintf(2, "\nGEN-%d %2d -> ... -> %2d,                 %2d\n", j, STDIN, STDOUT, CHILDIN);
-			// dprintf(2, "\nGEN-%d                  %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, NXT_CHILD_WILL_READ);
-				// dprintf(2, "PAR-%d %2d -> ... -> %2d,                 %2d\n\n", j, STDIN, STDOUT,  NXT_CHILD_WILL_READ);
-				// dprintf(2, "CHL-%d %2d -> ... -> %2d, %2d -> ... -> %2d %2d\n", j, CHILDIN, CHILDOUT, CHILDIN, CHILDOUT, NXT_CHILD_WILL_READ);
-#include <stdlib.h> // tmp
-#include <stdio.h> // tmp
-	//while (1); // if test
-
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
@@ -30,8 +22,6 @@ int	main(int argc, char *argv[], char *env[])
 	int pip[2];
 	(void)argc;
 
-	// dprintf(2, "+ in  %d\n", CHILDIN);
-	// dprintf(2, "\nGEN %d\t%2d\t%2d\n", CHILDIN, CHILDOUT, NXT_CHILDIN);
 	while (argv[i] && argv[i + 1]) //check the end
 	{
 		for (argv = &argv[i + 1], i = 0; argv[i] && strcmp(argv[i], ";") && strcmp(argv[i], "|"); i++) ; //new argv starts after ; or |
@@ -41,15 +31,10 @@ int	main(int argc, char *argv[], char *env[])
 			write_fd2("error: cd: cannot change directory to ", argv[1]);
 		if (strcmp(argv[0], "cd") != 0 && i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
 		{
-			// dprintf(2, "+ out %d\n", CHILDOUT);
-			// dprintf(2, "+ nxt %d\n", NXT_CHILDIN);
 			if (fork() != 0)
 			{
-				// dprintf(2, "- in  %d\n", CHILDIN);
 				close(CHILDIN);
-				// dprintf(2, "+ in  %d = nxt\n", CHILDIN);
 				CHILDIN = NXT_CHILDIN;
-				// dprintf(2, "- out %d\n", CHILDOUT);
 				close(CHILDOUT);
 				waitpid(-1, NULL, WUNTRACED); // waits child complete / stopped, WUNTRACED = stopped but not traced via ptrace
 			}
@@ -67,7 +52,6 @@ int	main(int argc, char *argv[], char *env[])
 			}
 		}
 	}
-	// dprintf(2, "- in  %d\n", CHILDIN);
 	close(CHILDIN);
 	sleep(240);
 }
