@@ -135,6 +135,6 @@ PS The followind commands don't show file leaks: `lsof | grep microshell`, `ls -
 
 https://github.com/shackbei/microshell-42/blob/main/microshell.c
 
-https://github.com/Glagan/42-exam-rank-04/blob/master/micro;shell/test.sh
+https://github.com/Glagan/42-exam-rank-04/blob/master/microshell/test.sh
 
 https://stackoverflow.com/questions/77385427/verify-open-file-descriptor-with-lsof/77386331#77386331 
