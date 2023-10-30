@@ -58,12 +58,16 @@ YEAH
 
 ## File leaks (open file descriptors)
 
-While the programm _is running_:
+1) Add `sleep(240)` in the end of the code
+
+2) Run the program
+
+3) Tape in another terminal:
 ```(bash)
 lsof -c microshell
 ```
 
-The output while the programm is running normally: 
+The output: 
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 46149   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
@@ -80,7 +84,7 @@ microshel 46149   an   38r   REG                7,4 12795643    9344 /snap/code/
 microshel 46149   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 ```
 
-While `./microshell /bin/ls` is running with all the "close" removed:
+The outout of `./microshell /bin/ls` while all the "close" are removed:
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 45572   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
@@ -100,8 +104,8 @@ microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/
 microshel 45572   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 ```
 
-While `./microshell /bin/ls "|" /bin/grep test ";" /bin/pwd "|" /bin/grep exam "|" /bin/grep ex ";" /bin/pwd
-test.sh` is running with all the "close" removed:
+The outout of `./microshell /bin/ls "|" /bin/grep test ";" /bin/pwd "|" /bin/grep exam "|" /bin/grep ex ";" /bin/pwd
+test.sh` while all the "close" are removed:
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 48375   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
