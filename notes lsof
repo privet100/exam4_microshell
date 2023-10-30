@@ -58,6 +58,10 @@ microshel 48375   an   38r   REG                7,4 12795643    9344 /snap/code/
 microshel 48375   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 
 
+* CHR = Character special file, a file that provides access to an input/output device (a terminal file, a NULL file, a file descriptor file, a system console file). 
+
+You cannot share character special files in read/write mode among systems participating in a shared file system in a sysplex.
+
 PS These commands don't show file leaks:
 
 lsof | grep microshell
