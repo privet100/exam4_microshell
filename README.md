@@ -58,11 +58,12 @@ YEAH
 
 ## File leaks (open file descriptors)
 
+While the programm __is running__:
 ```(bash)
 lsof -c microshell
 ```
 
-While the programm is running normally: 
+The output while the programm is running normally: 
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 46149   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
