@@ -58,7 +58,7 @@ YEAH
 
 ## File leaks (open file descriptors)
 
-While the programm __is running__:
+While the programm _is running_:
 ```(bash)
 lsof -c microshell
 ```
