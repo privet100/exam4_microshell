@@ -29,7 +29,7 @@ int	main(int argc, char *argv[], char *env[])
 			write_fd2("error: cd: bad arguments", NULL);
 		if (strcmp(argv[0], "cd") == 0 && i == 2 && chdir(argv[1]) != 0)
 			write_fd2("error: cd: cannot change directory to ", argv[1]);
-		if (strcmp(argv[0], "cd") != 0 && i > 0 && (argv[i] == NULL || strcmp(argv[i], "|") == 0 || strcmp(argv[i], ";") == 0) && pipe(pip) == 0)
+		if (strcmp(argv[0], "cd") != 0 && i > 0 && (!argv[i] || !strcmp(argv[i], "|") || !strcmp(argv[i], ";")) && !pipe(pip))
 		{
 			if (fork() != 0)
 			{
@@ -53,5 +53,4 @@ int	main(int argc, char *argv[], char *env[])
 		}
 	}
 	close(CHILDIN);
-	sleep(240);
 }

@@ -29,7 +29,6 @@ int	main(int argc, char *argv[], char *env[])
 	int	i = 0;
 	int CHILDIN = dup(STDIN);
 	int pip[2];
-	(void)argc;
 
 	dprintf(2, "CHLDIN\tCHIDOUT\tNXT_CHILDIN\n");
 	dprintf(2, "%d%5s\t%.5d %5s\t%.5d %5s\t // childin = dup\n", CHILDIN, fcntl(CHILDIN, F_GETFD) ? "" : "open", CHILDOUT, fcntl(CHILDOUT, F_GETFD) ? "" : "open", NXT_CHILDIN, fcntl(NXT_CHILDIN, F_GETFD) ? "" : "open");
