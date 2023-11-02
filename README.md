@@ -19,7 +19,7 @@ Write a program that will behave like executing a shell command
 - Don't forget to pass the environment variable to execve
 - Do not leak file descriptors
 
-## Examples
+Examples:
 ```
 $>./microshell /bin/ls "|" /usr/bin/grep microshell ";" /bin/echo i love my microshell
 ```
@@ -35,6 +35,8 @@ $>./microshell /bin/echo WOOT "; /bin/echo NOPE;" "; ;" ";" /bin/echo YEAH
 WOOT ; /bin/echo NOPE; ; ;
 YEAH
 ```
+## Notes
+Examshell doesn't test "error: fatal"
 
 ## File leaks (open file descriptors)
 
@@ -66,7 +68,6 @@ microshel 45572   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
 microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
 microshel 45572   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 ```
-
 
 ## Sources
 
