@@ -1,7 +1,6 @@
-## Allowed functions
-malloc, free, write, close, fork, waitpid, signal, kill, exit, chdir, execve, dup, dup2, pipe, strcmp, strncmp
+## Assignment 
 
-## Assignment (EN)
+Allowed functions: malloc, free, write, close, fork, waitpid, signal, kill, exit, chdir, execve, dup, dup2, pipe, strcmp, strncmp
 
 Write a program that will behave like executing a shell command
 - The command line to execute will be the arguments of this program
@@ -20,26 +19,7 @@ Write a program that will behave like executing a shell command
 - Don't forget to pass the environment variable to execve
 - Do not leak file descriptors
 
-## Assignment (FR)
-
-Ecrire un programme qui aura ressemblera à un executeur de commande shell
-- La ligne de commande à executer sera passer en argument du programme
-- Les executables seront appelés avec un chemin relatif ou absolut mais votre programme ne devra pas construire de chemin (en utilisant la variable d environment PATH par exemple)
-- Votre programme doit implementer "|" et ";" comme dans bash
-	- Nous n'essaierons jamais un "|" immédiatement suivi ou précédé par rien ou un autre "|" ou un ";"
-- Votre programme doit implementer la commande "built-in" cd et seulement avec un chemin en argument (pas de '-' ou sans argument)
-	- si cd n'a pas le bon nombre d'arguments votre programme devra afficher dans STDERR "error: cd: bad arguments" suivi d'un '\n'
-	- si cd a echoué votre programme devra afficher dans STDERR "error: cd: cannot change directory to path_to_change" suivi d'un '\n' avec path_to_change remplacer par l'argument à cd
-	- une commande cd ne sera jamais immédiatement précédée ou suivie par un "|"
-- Votre programme n'a pas à gerer les "wildcards" (*, ~ etc...)
-- Votre programme n'a pas à gerer les variables d'environment ($BLA ...)
-- Si un appel systeme, sauf execve et chdir, retourne une erreur votre programme devra immédiatement afficher dans STDERR "error: fatal" suivi d'un '\n' et sortir
-- Si execve echoue votre programme doit afficher dans STDERR "error: cannot execute executable_that_failed" suivi d'un '\n' en ayant remplacé executable_that_failed avec le chemin du programme qui n'a pu etre executé (ca devrait etre le premier argument de execve)
-- Votre programme devrait pouvoir accepter des centaines de "|" meme si la limite du nombre de "fichier ouvert" est inferieur à 30.
-- N'oubliez pas de passer les variables d'environment à execve
-- Ne fuitez pas de file descriptor
-
-## Examples
+Examples:
 ```
 $>./microshell /bin/ls "|" /usr/bin/grep microshell ";" /bin/echo i love my microshell
 ```
@@ -55,6 +35,9 @@ $>./microshell /bin/echo WOOT "; /bin/echo NOPE;" "; ;" ";" /bin/echo YEAH
 WOOT ; /bin/echo NOPE; ; ;
 YEAH
 ```
+## Examshell
+- doesn't test "error: fatal"
+- tests like this: > ulumit -n 30; ./microshell ...
 
 ## File leaks (open file descriptors)
 
@@ -67,24 +50,7 @@ YEAH
 lsof -c microshell
 ```
 
-The normal output: 
-```
-COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
-microshel 46149   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
-microshel 46149   an  rtd    DIR               8,20     4096       2 /
-microshel 46149   an  txt    REG                9,0    17216 7082016 /mnt/md0/42/exam04/microshell
-microshel 46149   an  mem    REG               8,20  2029592 5245077 /usr/lib/x86_64-linux-gnu/libc-2.31.so
-microshel 46149   an  mem    REG               8,20   191504 5245069 /usr/lib/x86_64-linux-gnu/ld-2.31.so
-microshel 46149   an    0u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an    1u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an    2u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an   36w   REG               8,20      488 2891842 /home/an/.config/Code/logs/20231030T080138/ptyhost.log
-microshel 46149   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
-microshel 46149   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
-microshel 46149   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
-```
-
-The outout of `./microshell /bin/ls` while all the "close" are removed:
+File leaks example (= the file descriptors have not been closed):
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 45572   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
@@ -103,33 +69,6 @@ microshel 45572   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
 microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
 microshel 45572   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 ```
-
-The outout of `./microshell /bin/ls "|" /bin/grep test ";" /bin/pwd "|" /bin/grep exam "|" /bin/grep ex ";" /bin/pwd
-test.sh` while all the "close" are removed:
-```
-COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
-microshel 48375   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
-microshel 48375   an  rtd    DIR               8,20     4096       2 /
-microshel 48375   an  txt    REG                9,0    17176 7082016 /mnt/md0/42/exam04/microshell
-microshel 48375   an  mem    REG               8,20  2029592 5245077 /usr/lib/x86_64-linux-gnu/libc-2.31.so
-microshel 48375   an  mem    REG               8,20   191504 5245069 /usr/lib/x86_64-linux-gnu/ld-2.31.so
-microshel 48375   an    0u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    1u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    2u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    3u   CHR              136,0      0t0       3 /dev/pts/0             (!)
-microshel 48375   an    4r  FIFO               0,13      0t0  846991 pipe                   (!)
-microshel 48375   an    5w  FIFO               0,13      0t0  846991 pipe                   (!)
-microshel 48375   an    6r  FIFO               0,13      0t0  846992 pipe                   (!)
-microshel 48375   an    7w  FIFO               0,13      0t0  846992 pipe                   (!)
-microshel 48375   an   36w   REG               8,20      488 2891842 /home/an/.config/Code/logs/20231030T080138/ptyhost.log
-microshel 48375   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
-microshel 48375   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
-microshel 48375   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
-```
-
-* CHR = Character special file, provides access to an input/output device (a terminal file, a NULL file, a file descriptor file, a system console file) 
-
-PS The followind commands don't show file leaks: `lsof | grep microshell`, `ls -l /proc/$$/fd`, `lsof -a -p $$`
 
 ## Sources
 
