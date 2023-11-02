@@ -1,7 +1,6 @@
-## Allowed functions
-malloc, free, write, close, fork, waitpid, signal, kill, exit, chdir, execve, dup, dup2, pipe, strcmp, strncmp
+## Assignment 
 
-## Assignment (EN)
+Allowed functions: malloc, free, write, close, fork, waitpid, signal, kill, exit, chdir, execve, dup, dup2, pipe, strcmp, strncmp
 
 Write a program that will behave like executing a shell command
 - The command line to execute will be the arguments of this program
@@ -19,25 +18,6 @@ Write a program that will behave like executing a shell command
 - Your program should be able to manage more than hundreds of "|" even if we limit the number of "open files" to less than 30.
 - Don't forget to pass the environment variable to execve
 - Do not leak file descriptors
-
-## Assignment (FR)
-
-Ecrire un programme qui aura ressemblera à un executeur de commande shell
-- La ligne de commande à executer sera passer en argument du programme
-- Les executables seront appelés avec un chemin relatif ou absolut mais votre programme ne devra pas construire de chemin (en utilisant la variable d environment PATH par exemple)
-- Votre programme doit implementer "|" et ";" comme dans bash
-	- Nous n'essaierons jamais un "|" immédiatement suivi ou précédé par rien ou un autre "|" ou un ";"
-- Votre programme doit implementer la commande "built-in" cd et seulement avec un chemin en argument (pas de '-' ou sans argument)
-	- si cd n'a pas le bon nombre d'arguments votre programme devra afficher dans STDERR "error: cd: bad arguments" suivi d'un '\n'
-	- si cd a echoué votre programme devra afficher dans STDERR "error: cd: cannot change directory to path_to_change" suivi d'un '\n' avec path_to_change remplacer par l'argument à cd
-	- une commande cd ne sera jamais immédiatement précédée ou suivie par un "|"
-- Votre programme n'a pas à gerer les "wildcards" (*, ~ etc...)
-- Votre programme n'a pas à gerer les variables d'environment ($BLA ...)
-- Si un appel systeme, sauf execve et chdir, retourne une erreur votre programme devra immédiatement afficher dans STDERR "error: fatal" suivi d'un '\n' et sortir
-- Si execve echoue votre programme doit afficher dans STDERR "error: cannot execute executable_that_failed" suivi d'un '\n' en ayant remplacé executable_that_failed avec le chemin du programme qui n'a pu etre executé (ca devrait etre le premier argument de execve)
-- Votre programme devrait pouvoir accepter des centaines de "|" meme si la limite du nombre de "fichier ouvert" est inferieur à 30.
-- N'oubliez pas de passer les variables d'environment à execve
-- Ne fuitez pas de file descriptor
 
 ## Examples
 ```
