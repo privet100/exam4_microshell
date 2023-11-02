@@ -67,7 +67,7 @@ YEAH
 lsof -c microshell
 ```
 
-File Leaks example:
+File leaks example (= the files have not been closed):
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 45572   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
