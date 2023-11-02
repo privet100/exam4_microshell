@@ -37,7 +37,8 @@ YEAH
 ```
 ## Examshell
 - doesn't test "error: fatal"
-- tests like this: > ulumit -n 30; ./microshell ...
+- tests like this: $> ulumit -n 30; ./microshell ...
+- 15 tests
 
 ## File leaks (open file descriptors)
 
