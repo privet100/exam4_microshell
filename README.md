@@ -67,24 +67,7 @@ YEAH
 lsof -c microshell
 ```
 
-The normal output: 
-```
-COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
-microshel 46149   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
-microshel 46149   an  rtd    DIR               8,20     4096       2 /
-microshel 46149   an  txt    REG                9,0    17216 7082016 /mnt/md0/42/exam04/microshell
-microshel 46149   an  mem    REG               8,20  2029592 5245077 /usr/lib/x86_64-linux-gnu/libc-2.31.so
-microshel 46149   an  mem    REG               8,20   191504 5245069 /usr/lib/x86_64-linux-gnu/ld-2.31.so
-microshel 46149   an    0u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an    1u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an    2u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 46149   an   36w   REG               8,20      488 2891842 /home/an/.config/Code/logs/20231030T080138/ptyhost.log
-microshel 46149   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
-microshel 46149   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
-microshel 46149   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
-```
-
-The outout of `./microshell /bin/ls` while all the "close" are removed:
+File Leaks example:
 ```
 COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
 microshel 45572   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
@@ -104,32 +87,6 @@ microshel 45572   an   38r   REG                7,4 12795643    9344 /snap/code/
 microshel 45572   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
 ```
 
-The outout of `./microshell /bin/ls "|" /bin/grep test ";" /bin/pwd "|" /bin/grep exam "|" /bin/grep ex ";" /bin/pwd
-test.sh` while all the "close" are removed:
-```
-COMMAND     PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
-microshel 48375   an  cwd    DIR                9,0     4096 7081581 /mnt/md0/42/exam04
-microshel 48375   an  rtd    DIR               8,20     4096       2 /
-microshel 48375   an  txt    REG                9,0    17176 7082016 /mnt/md0/42/exam04/microshell
-microshel 48375   an  mem    REG               8,20  2029592 5245077 /usr/lib/x86_64-linux-gnu/libc-2.31.so
-microshel 48375   an  mem    REG               8,20   191504 5245069 /usr/lib/x86_64-linux-gnu/ld-2.31.so
-microshel 48375   an    0u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    1u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    2u   CHR              136,0      0t0       3 /dev/pts/0
-microshel 48375   an    3u   CHR              136,0      0t0       3 /dev/pts/0             (!)
-microshel 48375   an    4r  FIFO               0,13      0t0  846991 pipe                   (!)
-microshel 48375   an    5w  FIFO               0,13      0t0  846991 pipe                   (!)
-microshel 48375   an    6r  FIFO               0,13      0t0  846992 pipe                   (!)
-microshel 48375   an    7w  FIFO               0,13      0t0  846992 pipe                   (!)
-microshel 48375   an   36w   REG               8,20      488 2891842 /home/an/.config/Code/logs/20231030T080138/ptyhost.log
-microshel 48375   an   37u  unix 0x0000000000000000      0t0  764762 type=STREAM
-microshel 48375   an   38r   REG                7,4 12795643    9344 /snap/code/143/usr/share/code/resources/app/node_modules.asar
-microshel 48375   an  103r   REG                7,4   578186    9650 /snap/code/143/usr/share/code/v8_context_snapshot.bin
-```
-
-* CHR = Character special file, provides access to an input/output device (a terminal file, a NULL file, a file descriptor file, a system console file) 
-
-PS The followind commands don't show file leaks: `lsof | grep microshell`, `ls -l /proc/$$/fd`, `lsof -a -p $$`
 
 ## Sources
 
