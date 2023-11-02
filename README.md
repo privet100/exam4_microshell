@@ -35,8 +35,9 @@ $>./microshell /bin/echo WOOT "; /bin/echo NOPE;" "; ;" ";" /bin/echo YEAH
 WOOT ; /bin/echo NOPE; ; ;
 YEAH
 ```
-## Notes
-Examshell doesn't test "error: fatal"
+## Examshell
+- doesn't test "error: fatal"
+- tests like this: > ulumit -n 30; ./microshell ...
 
 ## File leaks (open file descriptors)
 
